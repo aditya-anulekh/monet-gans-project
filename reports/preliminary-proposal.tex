@@ -42,11 +42,14 @@
     \paragraph{Project Team:} Prithvi Anandkumar Dalal, Shoumik Nandi, Aditya Anulekh Mantri
 
     \paragraph{Competition summary:}
-    For this project we propose to create a model to segment neuronal cells in light-microscopy images.
-    We will build a model to delineate objects and cells of interest common in biological images of neurological disorders (Figure \ref{fig:nseg}).
-    Neuronal cell segmentation is a critical first step to quantify how neurological disorders respond to treatment.
-    Current computer vision solutions are a poor-fit becase neuronal cells have a unique, irregular, and concave morphology that differs from other cellular mask heads.
-    A successful model will use the training phase contrast microscopy images to segment neuronal instances in noveal images with a high level of accuracy.
+    For this project we propose to create a model to create Monet-styled paintings from photos.
+    Some of the applications of neural style transfer are:
+    \begin{itemize}
+        \item \textbf{Gaming and VR:} There are many cloud-powered video game streams that use image style transfer. CycleGANs assist developers to create interactive environments with personalised artistic styles to users.
+        \item \textbf{Photo and Video Editing:} Style transfer can be used to edit and apply filters to photos and videos in real time.
+        \item \textbf{Art and Entertainment:} Neural style transfer can be applied to art and paintings to recreate new ones.
+    \end{itemize}
+
 
     \begin{figure}[!htb]
         \begin{center}
@@ -66,8 +69,7 @@
     The competition dataset is 385.87 MB.
     It consists of 300 Monet styled paintings and 7028 photos.
     Each image has 3 channels and is 256x256 pixels.
-    The dataset also includes .tfrecord files of the same images.
-    We are supposed to submit 7000-10000 Monet styled images to the competetion.
+    We are supposed to submit 7000-10000 Monet styled images to the competition.
 
     Submissions are evaluated on MiFID (Memorization-informed Fréchet Inception Distance), which is a modification from Fréchet Inception Distance (FID).
 
@@ -78,9 +80,7 @@
     \begin{displaymath}
         \text{FID} = ||\mu_r - \mu_g||^2 + \text{Tr} (\Sigma_r + \Sigma_g - 2 (\Sigma_r \Sigma_g)^{1/2})
     \end{displaymath}
-    Where $Tr$ represents the trace of the matrix.
-
-    More information about the evaluation of the competetion can be found here \href{https://www.kaggle.com/c/gan-getting-started/overview/evaluation}{here}
+    Where $Tr$ represents the trace of the matrix. More information about the evaluation of the competetion can be found here \href{https://www.kaggle.com/c/gan-getting-started/overview/evaluation}{here}
 
     \paragraph{Primary References and Codebase:}  We propose to build on the approach used in
 
@@ -92,28 +92,21 @@
 
         \item Blog post: \href{https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html#implementation}{DCGAN Tutorial}
 
-        \item Github codebases:
-        \begin{itemize}
-            \item \href{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}{CycleGAN and pix2pix in PyTorch},
-        \end{itemize}
+        \item Github codebases: \href{https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix}{CycleGAN and pix2pix in PyTorch},
     \end{itemize}
 
 
-    \paragraph{Architecture Investigation Plan:}  We plan to first implement the U-net architecture described the above reference [Ronneberger2015] and apply our traning data.  We then will compare the results to a Mask R-CNN architecuture which often performs well with only minimal transfer learning [Durkee2021].  Neuronal microscopy images do not have directionality and we will make heavy use of data augmentation increase the relative size of our dataset.
-
+    \paragraph{Architecture Investigation Plan:}  We plan to first implement the CycleGAN architecture described in the paper by Jun-Yan Zhu et-al. We will then investigate the benefit of using a pre-trained model for generating Monet styled paintings, since the given dataset is very small and training a model from scratch might not be the most efficient approach.
     \paragraph{Estimated Compute Needs:}  Based on the data set size in the above paper and the benchmarks in this \href{https://lambdalabs.com/blog/titan-v-deep-learning-benchmarks/}{Lambda Labs Blog}, we estimate that one training run for our initial U-net architecture will take 14 hours on a single nVidia V100 GPU, which is the GPU resource in the AWS p3.2xlarge instance.  With spot pricing, which is roughly \$1 per hour, we expect \$15 per training run.  The proposed Mask R-CNN architecture will be roughly twice the complexity, so we estimation \$30 per run.  We expect to do a number of provisional runs to tune hyper-parameters.  We estimate that this will cost approximate \$40.  In addition, we expect to do approximately 4 full runs which brings our total estimated computing cost to roughly \$200.  Pooling our AWS promo resources, we expect to be about \$ 80 short of this value.
 
     \paragraph{Team Roles:} The following is the rough breakdown of roles and responsibilities we plan for our team:
     \begin{itemize}
-        \item Prithvi Anandkumar Dalal: Data collection and cleaning, video production.  Code Mask R-CNN.
-        \item Shoumik Nandi: Get existing U-net codebase running on an AWS instance.
-        \item Aditya Anulekh Mantri: Data Augmentation and team-code Mask R-CNN, assist with U-Net.
+        \item Prithvi Anandkumar Dalal: Data cleaning, augmentation and setup training pipeline on AWS
+        \item Shoumik Nandi: Hyperparameter tuning and visualization
+        \item Aditya Anulekh Mantri: Code and train CycleGAN model and assist with hyperparameter tuning
     \end{itemize}
     All team members will work on the final report and video.
 
 % #TODO
-%    Competition Summary
-%    Architecture Investigation Plan
 %    Estimated Compute Needs
-%    Team Roles
 \end{document}
