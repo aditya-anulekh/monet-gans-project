@@ -97,7 +97,9 @@
 
 
     \paragraph{Architecture Investigation Plan:}  We plan to first implement the CycleGAN architecture described in the paper by Jun-Yan Zhu et-al. We will then investigate the benefit of using a pre-trained model for generating Monet styled paintings, since the given dataset is very small and training a model from scratch might not be the most efficient approach.
-    \paragraph{Estimated Compute Needs:}  Based on the data set size in the above paper and the benchmarks in this \href{https://lambdalabs.com/blog/titan-v-deep-learning-benchmarks/}{Lambda Labs Blog}, we estimate that one training run for our initial U-net architecture will take 14 hours on a single nVidia V100 GPU, which is the GPU resource in the AWS p3.2xlarge instance.  With spot pricing, which is roughly \$1 per hour, we expect \$15 per training run.  The proposed Mask R-CNN architecture will be roughly twice the complexity, so we estimation \$30 per run.  We expect to do a number of provisional runs to tune hyper-parameters.  We estimate that this will cost approximate \$40.  In addition, we expect to do approximately 4 full runs which brings our total estimated computing cost to roughly \$200.  Pooling our AWS promo resources, we expect to be about \$ 80 short of this value.
+    \paragraph{Estimated Compute Needs:} We tried implementing the DCGAN architecture described in the paper above on Google Colab with a Tesla K80 GPU (Compute capability: 3.7) and it took roughly 3 hours to train the model.
+    The dataset used was the Monet paintings (approx. 300 images). Since we are implementing a CycleGAN model which is more complicated than a vanilla DCGAN, we estimate that it would take about 7 to 8 hours for one simulation.
+    This is also taking into consideration the fact that the photos dataset is a significantly larger dataset as compared to the Monet paintings dataset.
 
     \paragraph{Team Roles:} The following is the rough breakdown of roles and responsibilities we plan for our team:
     \begin{itemize}
