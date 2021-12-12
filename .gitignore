@@ -125,3 +125,10 @@ logs/
 # Folders to ignore
 /out
 /.idea
+/gan-getting-started
+/cyclegan/generated_images
+/monet2photo
+/cyclegan/checkpoints
+/cyclegan/testOutputs
+
+gan-getting-started.zip
