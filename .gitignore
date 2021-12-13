@@ -130,5 +130,6 @@ logs/
 /monet2photo
 /cyclegan/checkpoints
 /cyclegan/testOutputs
+cyclegan/report_files
 
 gan-getting-started.zip

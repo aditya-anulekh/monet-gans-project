@@ -2,6 +2,7 @@ from datetime import datetime
 import os
 import os.path as osp
 import warnings
+import logging
 
 import torch
 import torch.nn as nn
@@ -60,22 +61,27 @@ def train_gan(disc_p, disc_m, gen_p, gen_m, train_dataloader, opt_disc, opt_gen,
         cycle_photo_loss = l1(photo_img, cycle_photo)
 
         # Identity loss - Monet fed to a Monet generator should result in a monet and likewise for photo
-        # identity_monet = gen_m(monet_img)
-        # identity_photo = gen_p(photo_img)
-        # identity_monet_loss = l1(monet_img, identity_monet)
-        # identity_photo_loss = l1(photo_img, identity_photo)
+        identity_monet = gen_m(monet_img)
+        identity_photo = gen_p(photo_img)
+        identity_monet_loss = l1(monet_img, identity_monet)
+        identity_photo_loss = l1(photo_img, identity_photo)
 
-        total_gen_loss = gen_m_loss + gen_p_loss + 10*(cycle_monet_loss + cycle_photo_loss) #+ 0.5*10*(identity_monet_loss + identity_photo_loss)
+        total_gen_loss = (gen_m_loss + gen_p_loss 
+                        + config.LAMBDA*(cycle_monet_loss + cycle_photo_loss) 
+                        + config.LAMBDA_IDENTITY*(identity_monet_loss + identity_photo_loss))
 
         # Train generators
         opt_gen.zero_grad()
         total_gen_loss.backward()
         opt_gen.step()
 
-        if idx%50 == 0:
-            tqdm.write(f"loss - gen={total_gen_loss}, disc={disc_loss}")
-            # save_image(fake_monet*127.5+127.5, f"cyclegan/generated_images/monet_{idx}.png")
-            # save_image(fake_photo*127.5+127.5, f"cyclegan/generated_images/photo_{idx}.png")
+        if idx%500 == 0:
+            with open(f"{CHECKPOINT_DIR}/logs.txt", "a") as file:
+                file.write(f"loss - gen={total_gen_loss:0.2f}, disc={disc_loss:0.2f}\n")
+    
+    # Mark the end of an epoch
+    with open(f"{CHECKPOINT_DIR}/logs.txt", "a") as file:
+        file.write(f"*"*50)
 
 
 def initialize_weights(m):
@@ -100,6 +106,15 @@ if __name__ == "__main__":
 
     gen_p.apply(initialize_weights)
     gen_m.apply(initialize_weights)
+
+    if config.LOAD_CHECKPOINT:
+        disc_p.load_state_dict(torch.load("cyclegan/checkpoints/1212210846/disc_p_31.pth"))
+        disc_m.load_state_dict(torch.load("cyclegan/checkpoints/1212210846/disc_m_31.pth"))
+
+        gen_p.load_state_dict(torch.load("cyclegan/checkpoints/1212210846/gen_p_31.pth"))
+        gen_m.load_state_dict(torch.load("cyclegan/checkpoints/1212210846/gen_m_31.pth"))
+
+        print("Loaded all checkpoints successfully")
 
     opt_disc = torch.optim.Adam(list(disc_m.parameters())+list(disc_p.parameters()),
                                 lr=config.LEARNING_RATE,
@@ -147,6 +162,10 @@ if __name__ == "__main__":
         os.mkdir(CHECKPOINT_DIR)
         print(f"Created checkpoint dir at {CHECKPOINT_DIR}")
 
+    # Write existing configs to logs.txt file
+    with open(f"{CHECKPOINT_DIR}/logs.txt", "w") as file:
+        file.write(f"Cycle consistency loss = {config.LAMBDA}\n")
+        file.write(f"Identity loss = {config.LAMBDA_IDENTITY}\n")
 
     for i in range(config.NUM_EPOCHS):
         print(f"Epoch - {i}/{config.NUM_EPOCHS}")
