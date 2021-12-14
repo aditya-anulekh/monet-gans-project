@@ -7,9 +7,9 @@ We trained the model on GCP with a Tesla V100 GPU with 16GB RAM.
 
 ### Installation instructions
 * Setup Nvidia GPU drivers is not setup already
-* Install conda environment using the ```environment.yml``` file
+* Install conda environment using the ```ee541.yml``` file
     
-    ```conda env create -f environment.yml```
+    ```conda env create -f ee514.yml```
 * Download the dataset from [here](https://www.kaggle.com/suyashdamle/cyclegan?select=monet2photo)
 * To start training the model run the following command from the root directory
 
